@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+asyncpg
+pydantic
+python-jose[cryptography]
+passlib[bcrypt]
+websockets
+alembic
+pytest
+httpx
+motor
+aioredis
+python-multipart
+pymongo
+psycopg[binary]
+redis

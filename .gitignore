@@ -1,0 +1,13 @@
+/chatapp_env
+/venv
+__pycache__/
+/*.pyc
+.DS_Store
+.env
+*.sqlite3
+/.idea
+/.vscode
+/postgres_data
+/mongo_data
+/redis_data
+*.log
