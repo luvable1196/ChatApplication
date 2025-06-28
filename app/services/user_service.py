@@ -35,3 +35,6 @@ class UserService:
 
     def search_users(self, query: str):
         return self.db.query(User).filter(User.username.contains(query)).all()
+    
+    def list_users(self):
+        return self.db.query(User).all()

@@ -1,5 +1,6 @@
+from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException, Body
-from app.schemas.user import UserCreate, UserOut
+from app.schemas.user import UserCreate, UserOut,UserLogin
 from app.services.auth_service import AuthService
 from app.utils.security import create_access_token, verify_refresh_token, blacklist_token
 from app.core.database import get_db
@@ -18,12 +19,15 @@ async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
     return new_user
 
 @router.post("/login")
-async def login(user: UserCreate):
-    user_data = await auth_service.authenticate_user(user.email, user.password)
+async def login(user: UserLogin, db: AsyncSession = Depends(get_db)):
+    user_data = await auth_service.authenticate_user(user.email, user.password, db)
     if not user_data:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     access_token = create_access_token(data={"sub": user.email})
-    refresh_token = create_access_token(data={"sub": user.email}, expires_minutes=60*24*7)  # 7 days
+    refresh_token = create_access_token(
+        data={"sub": user.email},
+        expires_delta=timedelta(minutes=60*24*7)
+    )
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 @router.post("/logout")

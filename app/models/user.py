@@ -19,6 +19,7 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
+    rooms = relationship("Room", back_populates="owner")
     # Relationships (update as needed for your app)
     # messages = relationship("Message", back_populates="owner")
     # rooms = relationship("Room", secondary="user_rooms", back_populates="members")

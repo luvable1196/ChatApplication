@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from motor.motor_asyncio import AsyncIOMotorClient
 from redis.asyncio import Redis
 from sqlalchemy.orm import Session
@@ -8,8 +9,8 @@ from fastapi import Depends
 from app.core.config import settings
 
 # PostgreSQL (SQLAlchemy)
-engine = create_engine(settings.DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = create_async_engine(settings.DATABASE_URL, echo=True)
+SessionLocal = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 Base = declarative_base()
 
 # MongoDB (Motor)
@@ -22,11 +23,12 @@ async def init_db():
     import app.models.user
     import app.models.room
     import app.models.message
-    Base.metadata.create_all(bind=engine)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
-def get_db():
+async def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
-        db.close()
+        await db.close()

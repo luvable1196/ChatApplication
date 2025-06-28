@@ -20,6 +20,9 @@ async def update_user(user_id: int, user_update: UserUpdate, current_user: User 
     return updated_user
 
 @router.get("/", response_model=list[User])
-async def search_users(query: str):
-    users = await UserService.search_users(query)
+# async def search_users(query: str):
+#     users = await UserService.search_users(query)
+#     return users
+async def list_users(current_user=Depends(get_current_user)):
+    users = await UserService.list_users()
     return users
