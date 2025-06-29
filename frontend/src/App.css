@@ -1,0 +1,335 @@
+/* index.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+.App {
+  min-height: 100vh;
+}
+
+/* Floating Animation Keyframes */
+@keyframes float-0 {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg); 
+    opacity: 0.1;
+  }
+  50% { 
+    transform: translateY(-20px) rotate(180deg); 
+    opacity: 0.2;
+  }
+}
+
+@keyframes float-1 {
+  0%, 100% { 
+    transform: translateX(0px) rotate(0deg); 
+    opacity: 0.1;
+  }
+  50% { 
+    transform: translateX(20px) rotate(-90deg); 
+    opacity: 0.15;
+  }
+}
+
+@keyframes float-2 {
+  0%, 100% { 
+    transform: translate(0px, 0px) rotate(0deg); 
+    opacity: 0.1;
+  }
+  33% { 
+    transform: translate(10px, -10px) rotate(120deg); 
+    opacity: 0.2;
+  }
+  66% { 
+    transform: translate(-10px, 10px) rotate(240deg); 
+    opacity: 0.15;
+  }
+}
+
+@keyframes float-3 {
+  0%, 100% { 
+    transform: translateY(0px) scale(1); 
+    opacity: 0.1;
+  }
+  50% { 
+    transform: translateY(-15px) scale(1.1); 
+    opacity: 0.2;
+  }
+}
+
+@keyframes float-4 {
+  0%, 100% { 
+    transform: translateX(0px) rotate(0deg); 
+    opacity: 0.1;
+  }
+  25% { 
+    transform: translateX(15px) rotate(90deg); 
+    opacity: 0.15;
+  }
+  75% { 
+    transform: translateX(-15px) rotate(270deg); 
+    opacity: 0.2;
+  }
+}
+
+@keyframes float-5 {
+  0%, 100% { 
+    transform: translate(0px, 0px); 
+    opacity: 0.1;
+  }
+  50% { 
+    transform: translate(25px, -25px); 
+    opacity: 0.2;
+  }
+}
+
+@keyframes float-6 {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg); 
+    opacity: 0.1;
+  }
+  50% { 
+    transform: translateY(30px) rotate(180deg); 
+    opacity: 0.15;
+  }
+}
+
+@keyframes float-7 {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg); 
+    opacity: 0.1;
+  }
+  50% { 
+    transform: scale(1.2) rotate(360deg); 
+    opacity: 0.2;
+  }
+}
+
+@keyframes fade-in {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes fade-in-delay {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(168, 85, 247, 0.8);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Animation Classes */
+.animate-float-0 { animation: float-0 15s ease-in-out infinite; }
+.animate-float-1 { animation: float-1 18s ease-in-out infinite; }
+.animate-float-2 { animation: float-2 20s ease-in-out infinite; }
+.animate-float-3 { animation: float-3 16s ease-in-out infinite; }
+.animate-float-4 { animation: float-4 17s ease-in-out infinite; }
+.animate-float-5 { animation: float-5 19s ease-in-out infinite; }
+.animate-float-6 { animation: float-6 14s ease-in-out infinite; }
+.animate-float-7 { animation: float-7 21s ease-in-out infinite; }
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out;
+}
+
+.animate-fade-in-delay {
+  animation: fade-in-delay 1s ease-out 0.3s both;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-gradient {
+  background-size: 400% 400%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .animate-float-0,
+  .animate-float-1,
+  .animate-float-2,
+  .animate-float-3,
+  .animate-float-4,
+  .animate-float-5,
+  .animate-float-6,
+  .animate-float-7 {
+    animation-duration: 10s;
+  }
+}
+
+/* Loading States */
+.loading-spinner {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 2px solid #ffffff;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Glass Effect */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Hover Effects */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Button Animations */
+.btn-animate {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-animate::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-animate:hover::before {
+  left: 100%;
+}
+
+/* Form Animations */
+.form-input {
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  transform: scale(1.02);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+/* Text Animations */
+.text-shimmer {
+  background: linear-gradient(45deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+  background-size: 400% 400%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* Card Animations */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Notification Animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.notification-enter {
+  animation: slideInRight 0.3s ease-out;
+}
+
+.notification-exit {
+  animation: slideOutRight 0.3s ease-in;
+}

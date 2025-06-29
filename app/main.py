@@ -2,8 +2,17 @@ from fastapi import FastAPI
 from app.api import auth, users, rooms, messages, websocket
 from app.core.database import init_db
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # or ["http://localhost:3000"] for React dev
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 async def startup_event():

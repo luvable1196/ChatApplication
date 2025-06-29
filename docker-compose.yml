@@ -31,6 +31,29 @@ services:
     volumes:
       - redis_data:/data
 
+  frontend:
+    image: node:18-alpine
+    container_name: chat_frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+    environment:
+      - HOST=0.0.0.0
+      - CHOKIDAR_USEPOLLING=true
+    command: >
+      sh -c "
+        echo 'Starting fresh installation...' &&
+        rm -rf node_modules &&
+        echo 'Installing dependencies...' &&
+        npm install &&
+        echo 'Starting development server...' &&
+        npm start
+      "
+    stdin_open: true
+    tty: true
+
 volumes:
   postgres_data:
   mongo_data:
