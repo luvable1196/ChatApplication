@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import AuthLanding from './components/auth/AuthLanding';
 import LoginForm from './components/auth/LoginForm';
 import RegistrationForm from './components/auth/RegistrationForm';
+import Dashboard from './pages/Dashboard'; // Import your Dashboard component
 import './App.css';
 
-
 function App() {
-  const [currentView, setCurrentView] = useState('landing'); // 'landing', 'login', 'register', 'chat'
+  const [currentView, setCurrentView] = useState('landing'); // 'landing', 'login', 'register', 'dashboard'
   const [user, setUser] = useState(null);
   const [tokens, setTokens] = useState(null);
 
@@ -19,7 +19,7 @@ function App() {
       try {
         setTokens(JSON.parse(savedTokens));
         setUser(JSON.parse(savedUser));
-        setCurrentView('chat');
+        setCurrentView('dashboard'); // Changed from 'chat' to 'dashboard'
       } catch (error) {
         console.error('Error parsing saved auth data:', error);
         localStorage.removeItem('chatapp_tokens');
@@ -50,7 +50,11 @@ function App() {
     localStorage.setItem('chatapp_tokens', JSON.stringify(tokenData));
     localStorage.setItem('chatapp_user', JSON.stringify(userData));
     
-    setCurrentView('chat');
+    setCurrentView('dashboard'); // Changed from 'chat' to 'dashboard'
+  };
+
+  const handleLoginSuccess = () => {
+    setCurrentView('dashboard'); // Additional handler for direct navigation
   };
 
   const handleRegister = (registerData) => {
@@ -141,6 +145,7 @@ function App() {
         return (
           <LoginForm 
             onLogin={handleLogin}
+            onLoginSuccess={handleLoginSuccess}
             onSwitchToRegister={() => setCurrentView('register')}
             onBack={goBack}
           />
@@ -155,32 +160,14 @@ function App() {
           />
         );
       
-      case 'chat':
+      case 'dashboard':
         return (
-          <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-            <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
-              <h1 className="text-2xl font-bold text-gray-800 mb-4">
-                Welcome to ChatVerse!
-              </h1>
-              <p className="text-gray-600 mb-6">
-                Hello {user?.display_name || user?.username}! 
-                Your chat app will be implemented here.
-              </p>
-              <div className="space-y-4">
-                <div className="text-sm text-gray-500">
-                  <p>User ID: {user?.id}</p>
-                  <p>Email: {user?.email}</p>
-                  <p>Status: {user?.is_online ? 'Online' : 'Offline'}</p>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors"
-                >
-                  Logout
-                </button>
-              </div>
-            </div>
-          </div>
+          <Dashboard 
+            user={user}
+            tokens={tokens}
+            onLogout={handleLogout}
+            apiCall={apiCall}
+          />
         );
       
       default:

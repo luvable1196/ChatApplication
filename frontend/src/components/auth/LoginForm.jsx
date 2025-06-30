@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, LogIn, Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
 
-const LoginForm = ({ onLogin, onSwitchToRegister, onBack }) => {
+const LoginForm = ({ onLogin, onSwitchToRegister, onBack, onLoginSuccess }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -22,7 +22,7 @@ const LoginForm = ({ onLogin, onSwitchToRegister, onBack }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: formData.email, // Your API uses username field for email
+          email: formData.email,
           password: formData.password
         }),
         credentials: 'include'
@@ -31,8 +31,23 @@ const LoginForm = ({ onLogin, onSwitchToRegister, onBack }) => {
       const data = await response.json();
 
       if (response.ok) {
-        // Login successful - call onLogin with token data
+        // Store user data in localStorage or context
+        if (data.access_token) {
+          localStorage.setItem('authToken', data.access_token);
+        }
+        if (data.user) {
+          localStorage.setItem('userData', JSON.stringify(data.user));
+        }
+
+        // Call the parent callback functions
         onLogin?.(data);
+        
+        // Navigate to dashboard
+        onLoginSuccess?.();
+        
+        // If you're using React Router, you might also want to programmatically navigate:
+        // navigate('/dashboard');
+        
       } else {
         setError(data.detail || data.message || 'Login failed. Please check your credentials.');
       }
@@ -57,12 +72,14 @@ const LoginForm = ({ onLogin, onSwitchToRegister, onBack }) => {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 flex items-center justify-center p-4">
       <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl p-8 w-full max-w-md border border-white/20 relative">
         {/* Back Button */}
-        <button
-          onClick={onBack}
-          className="absolute top-4 left-4 p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </button>
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="absolute top-4 left-4 p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+        )}
 
         {/* Header */}
         <div className="text-center mb-8 mt-4">
@@ -75,7 +92,7 @@ const LoginForm = ({ onLogin, onSwitchToRegister, onBack }) => {
           <p className="text-gray-500 mt-2">Sign in to continue your journey</p>
         </div>
 
-        <div className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* Email Field */}
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-700">
@@ -88,9 +105,10 @@ const LoginForm = ({ onLogin, onSwitchToRegister, onBack }) => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-gray-50/50 form-input"
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-gray-50/50"
                 placeholder="Enter your email"
                 required
+                disabled={loading}
               />
             </div>
           </div>
@@ -107,14 +125,16 @@ const LoginForm = ({ onLogin, onSwitchToRegister, onBack }) => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-gray-50/50 form-input"
+                className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-gray-50/50"
                 placeholder="Enter your password"
                 required
+                disabled={loading}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                disabled={loading}
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
@@ -131,10 +151,9 @@ const LoginForm = ({ onLogin, onSwitchToRegister, onBack }) => {
 
           {/* Submit Button */}
           <button
-            type="button"
-            onClick={handleSubmit}
+            type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-indigo-600 hover:to-cyan-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] btn-animate"
+            className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-indigo-600 hover:to-cyan-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
           >
             {loading ? (
               <div className="flex items-center justify-center gap-2">
@@ -148,11 +167,15 @@ const LoginForm = ({ onLogin, onSwitchToRegister, onBack }) => {
 
           {/* Forgot Password */}
           <div className="text-center">
-            <button className="text-sm text-indigo-600 hover:text-indigo-700 font-medium transition-colors hover:underline">
+            <button 
+              type="button"
+              className="text-sm text-indigo-600 hover:text-indigo-700 font-medium transition-colors hover:underline"
+              disabled={loading}
+            >
               Forgot your password?
             </button>
           </div>
-        </div>
+        </form>
 
         {/* Register Link */}
         <div className="mt-8 text-center">
@@ -161,6 +184,7 @@ const LoginForm = ({ onLogin, onSwitchToRegister, onBack }) => {
             <button
               onClick={onSwitchToRegister}
               className="text-indigo-600 hover:text-indigo-700 font-semibold transition-colors hover:underline"
+              disabled={loading}
             >
               Create one here
             </button>
